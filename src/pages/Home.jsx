@@ -1,197 +1,4 @@
 
-// import React, { useState, useEffect, useRef } from 'react';
-// import { 
-//   BsSearch, BsThreeDotsVertical, BsEmojiSmile, 
-//   BsPaperclip, BsSendFill, BsTelephone, BsInfoCircle,
-//   BsHammer, BsCheck2All, BsPlusLg
-// } from 'react-icons/bs';
-// import { FaRegUserCircle } from "react-icons/fa";
-
-// // --- Initial Data Structure ---
-// const DUMMY_CHATS = [
-//   { id: 1, name: "Arif Rahaman", status: "online", avatar: "https://i.pravatar.cc/150?u=1" },
-//   { id: 2, name: "Sarah Kabir", status: "offline", avatar: "https://i.pravatar.cc/150?u=2" },
-//   { id: 3, name: "Tanvir Hasan", status: "online", avatar: "https://i.pravatar.cc/150?u=3" },
-// ];
-
-// const INITIAL_THREADS = {
-//   1: [
-//     { id: 101, text: "Is the engine original?", sender: "receiver", time: "10:30 AM", type: "text" },
-//     { id: 102, text: "Yes, 100% stock.", sender: "sender", time: "10:32 AM", type: "text" },
-//   ],
-//   2: [
-//     { id: 201, text: "12,50,000", sender: "receiver", time: "09:15 AM", type: "bid" },
-//   ],
-//   3: [
-//     { id: 301, text: "Check the documents please.", sender: "receiver", time: "Yesterday", type: "text" },
-//   ]
-// };
-
-// export default function PremiumAuctionChat() {
-//   const [activeChat, setActiveChat] = useState(DUMMY_CHATS[0]);
-//   // Store all conversations in one state object keyed by User ID
-//   const [allMessages, setAllMessages] = useState(INITIAL_THREADS);
-//   const [input, setInput] = useState("");
-//   const scrollRef = useRef(null);
-
-//   // Auto-scroll whenever the active chat or message list changes
-//   useEffect(() => {
-//     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-//   }, [activeChat.id, allMessages]);
-
-//   const handleSend = (e) => {
-//     e.preventDefault();
-//     if (!input.trim()) return;
-
-//     const isBid = /^\d+$/.test(input.replace(/[৳,]/g, ''));
-//     const newMessage = {
-//       id: Date.now(),
-//       text: input,
-//       sender: "sender",
-//       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-//       type: isBid ? "bid" : "text"
-//     };
-
-//     // Update only the specific thread for the active user
-//     setAllMessages(prev => ({
-//       ...prev,
-//       [activeChat.id]: [...(prev[activeChat.id] || []), newMessage]
-//     }));
-    
-//     setInput("");
-//   };
-
-//   // Helper to get the last message for the sidebar preview
-//   const getLastMsg = (userId) => {
-//     const thread = allMessages[userId];
-//     if (!thread || thread.length === 0) return "Start a conversation";
-//     const last = thread[thread.length - 1];
-//     return last.type === 'bid' ? `💰 Bid: ${last.text}` : last.text;
-//   };
-
-//   return (
-//     <div className="flex h-screen bg-[#0f172a] text-slate-200 overflow-hidden font-sans">
-      
-//       {/* --- Sidebar --- */}
-//       <div className="hidden md:flex flex-col w-80 lg:w-96 bg-slate-900/50 backdrop-blur-xl border-r border-slate-800">
-//         <div className="p-6 flex justify-between items-center">
-//           <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent"><FaRegUserCircle className='h-12 w-12 text-lime-200'  /></h1>
-//           <button className="p-2 hover:bg-slate-800 rounded-full transition-colors"><BsPlusLg className="text-indigo-400" /></button>
-//         </div>
-
-//         <div className="px-6 mb-4">
-//           <div className="relative group">
-//             <BsSearch className="absolute left-3 top-3 text-slate-500 group-focus-within:text-indigo-400" />
-//             <input type="text" placeholder="Search bidders..." className="w-full bg-slate-800/50 border border-slate-700 py-2.5 pl-10 pr-4 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50" />
-//           </div>
-//         </div>
-
-//         <div className="flex-1 overflow-y-auto px-3 space-y-2">
-//           {DUMMY_CHATS.map((chat) => (
-//             <div 
-//               key={chat.id}
-//               onClick={() => setActiveChat(chat)}
-//               className={`flex items-center p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
-//                 activeChat.id === chat.id 
-//                 ? 'bg-indigo-600/20 border border-indigo-500/40 shadow-lg' 
-//                 : 'hover:bg-slate-800/40 border border-transparent'
-//               }`}
-//             >
-//               <div className="relative">
-//                 <img src={chat.avatar} alt="avatar" className="w-12 h-12 rounded-xl object-cover" />
-//                 {chat.status === 'online' && <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></div>}
-//               </div>
-//               <div className="ml-4 flex-1">
-//                 <div className="flex justify-between items-center">
-//                   <h3 className={`font-semibold ${activeChat.id === chat.id ? 'text-indigo-300' : 'text-slate-200'}`}>{chat.name}</h3>
-//                 </div>
-//                 <p className="text-sm text-slate-500 truncate font-light italic">
-//                   {getLastMsg(chat.id)}
-//                 </p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* --- Dynamic Chat Window --- */}
-//       <div className="flex-1 flex flex-col bg-[#0b0f1a] relative">
-//         <header className="h-20 flex justify-between items-center px-8 bg-slate-900/30 backdrop-blur-md border-b border-slate-800 z-20">
-//           <div className="flex items-center gap-4">
-//             <img src={activeChat.avatar} alt="active" className="w-10 h-10 rounded-xl ring-2 ring-indigo-500/20" />
-//             <div>
-//               <h2 className="text-lg font-bold text-white leading-none mb-1">{activeChat.name}</h2>
-//               <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">{activeChat.status}</span>
-//             </div>
-//           </div>
-//           <div className="flex items-center gap-6 text-slate-400">
-//             <BsTelephone className="cursor-pointer hover:text-indigo-400" />
-//             <BsInfoCircle className="cursor-pointer hover:text-indigo-400" />
-//             <BsThreeDotsVertical className="cursor-pointer hover:text-indigo-400" />
-//           </div>
-//         </header>
-
-//         {/* Message area renders based on activeChat.id */}
-//         <div className="flex-1 overflow-y-auto p-8 space-y-6 z-10 custom-scrollbar">
-//           {(allMessages[activeChat.id] || []).map((msg) => (
-//             <div key={msg.id} className={`flex ${msg.sender === 'sender' ? 'justify-end' : 'justify-start'}`}>
-//               <div className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-xl ${
-//                 msg.type === 'bid'
-//                   ? 'bg-gradient-to-br from-amber-500/20 to-yellow-600/5 border border-amber-500/50'
-//                   : msg.sender === 'sender' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
-//               }`}>
-//                 {msg.type === 'bid' && (
-//                   <div className="flex items-center gap-2 mb-1 text-[10px] font-black text-amber-500 uppercase"><BsHammer /> Bid</div>
-//                 )}
-//                 <p className={msg.type === 'bid' ? 'text-xl font-black text-amber-400 italic' : 'text-sm'}>
-//                   {msg.type === 'bid' ? `৳ ${msg.text}` : msg.text}
-//                 </p>
-//                 <div className="flex items-center justify-end gap-1 mt-1 opacity-50 text-[10px]">
-//                   {msg.time} {msg.sender === 'sender' && <BsCheck2All className="text-cyan-400" />}
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-//           <div ref={scrollRef} />
-//         </div>
-
-//         <footer className="p-6 bg-slate-900/50 backdrop-blur-xl border-t border-slate-800 z-20">
-//           <form onSubmit={handleSend} className="max-w-5xl mx-auto flex items-center gap-4">
-//             <div className="flex gap-1">
-//               <button type="button" className="p-3 text-slate-400 hover:text-indigo-400"><BsPaperclip size={20} /></button>
-//               <button type="button" className="p-3 text-slate-400 hover:text-indigo-400"><BsEmojiSmile size={20} /></button>
-//             </div>
-//             <input 
-//               value={input}
-//               onChange={(e) => setInput(e.target.value)}
-//               placeholder="Type message..." 
-//               className="flex-1 bg-slate-800/80 border border-slate-700 px-6 py-3 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-//             />
-//             <button type="submit" className="bg-indigo-600 p-4 rounded-2xl text-white hover:bg-indigo-500 shadow-lg active:scale-95">
-//               <BsSendFill size={18} />
-//             </button>
-//           </form>
-//         </footer>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -------------------------------------New Code Below-------------------------------------
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   BsSearch, BsThreeDotsVertical, BsEmojiSmile, 
@@ -460,13 +267,17 @@ export default function PremiumAuctionChat() {
         )}
 
         {/* Message area */}
-        <div    className=" relative before:absolute before:inset-0
-         before:bg-[url('assets/images/bgLogo.jpg')]
-         before:bg-[length:300px_200px]
-         before:bg-no-repeat before:bg-center
-         before:opacity-30  flex-1 overflow-y-auto p-4 md:p-8 space-y-6 z-10 custom-scrollbar">
+        <div className="  flex-1 overflow-y-auto p-4 md:p-8 space-y-6 z-10 custom-scrollbar">
         
-
+             <div
+              className="
+                absolute inset-0
+                bg-[url('assets/images/bgLogo.jpg')]
+                bg-no-repeat bg-center
+                bg-[length:300px_200px]
+                opacity-30
+                pointer-events-none
+                z-0"/>
           {(allMessages[activeChat.id] || []).map((msg) => (
             <div key={msg.id} className={`flex ${msg.sender === 'sender' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[85%] md:max-w-[70%] px-4 md:px-5 py-3 rounded-2xl shadow-xl ${
